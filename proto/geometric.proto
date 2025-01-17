@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package geometric;
+
+service Geometric {
+  // Area of square
+  rpc AreaSquare (AreaSquareMessage) returns (IntegerResponse);
+  // Area of circle
+  rpc AreaCircle (AreaCircleMessage) returns (FloatResponse);
+}
+
+// Input -----------------------------------------------------------------------------------------------------------------
+
+message AreaSquareMessage {
+  uint64 base = 1;
+}
+
+message AreaCircleMessage {
+  uint64 radius = 1;
+}
+
+// Output -----------------------------------------------------------------------------------------------------------------
+
+message IntegerResponse {
+  uint64 value = 1;
+}
+
+message FloatResponse {
+  float value = 1;
+}
