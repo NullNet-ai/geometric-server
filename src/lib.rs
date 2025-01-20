@@ -1,5 +1,5 @@
 use crate::proto::geometric::geometric_client::GeometricClient;
-use crate::proto::geometric::{AreaCircleMessage, AreaSquareMessage};
+pub use crate::proto::geometric::{AreaCircleMessage, AreaSquareMessage, ResultResponse};
 use tonic::transport::Channel;
 use tonic::Request;
 
@@ -11,7 +11,7 @@ pub struct GeometricClientImpl {
 }
 
 impl GeometricClientImpl {
-    pub async fn area_square(&self, base: u64) -> Option<u64> {
+    pub async fn area_square(&self, message: AreaSquareMessage) -> Option<ResultResponse> {
         let channel = Channel::from_shared(format!("http://{}:{}", self.addr, self.port))
             .unwrap()
             .connect()
@@ -19,16 +19,14 @@ impl GeometricClientImpl {
             .unwrap();
         let mut client = GeometricClient::new(channel);
 
-        let area_square_message = AreaSquareMessage { base };
-
         client
-            .area_square(Request::new(area_square_message))
+            .area_square(Request::new(message))
             .await
-            .map(|x| x.into_inner().value)
+            .map(tonic::Response::into_inner)
             .ok()
     }
 
-    pub async fn area_circle(&self, radius: u64) -> Option<f32> {
+    pub async fn area_circle(&self, message: AreaCircleMessage) -> Option<ResultResponse> {
         let channel = Channel::from_shared(format!("http://{}:{}", self.addr, self.port))
             .unwrap()
             .connect()
@@ -36,12 +34,10 @@ impl GeometricClientImpl {
             .unwrap();
         let mut client = GeometricClient::new(channel);
 
-        let area_circle_message = AreaCircleMessage { radius };
-
         client
-            .area_circle(Request::new(area_circle_message))
+            .area_circle(Request::new(message))
             .await
-            .map(|x| x.into_inner().value)
+            .map(tonic::Response::into_inner)
             .ok()
     }
 }

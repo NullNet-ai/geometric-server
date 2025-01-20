@@ -4,27 +4,23 @@ package geometric;
 
 service Geometric {
   // Area of square
-  rpc AreaSquare (AreaSquareMessage) returns (IntegerResponse);
+  rpc AreaSquare (AreaSquareMessage) returns (ResultResponse);
   // Area of circle
-  rpc AreaCircle (AreaCircleMessage) returns (FloatResponse);
+  rpc AreaCircle (AreaCircleMessage) returns (ResultResponse);
 }
 
 // Input -----------------------------------------------------------------------------------------------------------------
 
 message AreaSquareMessage {
-  uint64 base = 1;
+  float base = 1;
 }
 
 message AreaCircleMessage {
-  uint64 radius = 1;
+  float radius = 1;
 }
 
 // Output -----------------------------------------------------------------------------------------------------------------
 
-message IntegerResponse {
-  uint64 value = 1;
-}
-
-message FloatResponse {
+message ResultResponse {
   float value = 1;
 }
