@@ -1,8 +1,6 @@
-use multiply::multiply;
 use crate::proto::geometric::geometric_server::Geometric;
-use crate::proto::geometric::{
-    AreaCircleMessage, AreaSquareMessage, ResultResponse,
-};
+use crate::proto::geometric::{AreaCircleMessage, AreaSquareMessage, ResultResponse};
+use multiply::multiply;
 use tonic::{Request, Response, Status};
 
 pub struct GeometricImpl;
@@ -32,5 +30,30 @@ impl Geometric for GeometricImpl {
 
         let response = ResultResponse { value: res };
         Ok(Response::new(response))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn test_area_square() {
+        let geometric_impl = GeometricImpl;
+        let message = AreaSquareMessage { base: 3.0 };
+        let request = Request::new(message);
+
+        let response = geometric_impl.area_square(request).await.unwrap();
+        assert_eq!(response.into_inner().value, 9.0);
+    }
+
+    #[tokio::test]
+    async fn test_area_circle() {
+        let geometric_impl = GeometricImpl;
+        let message = AreaCircleMessage { radius: 2.0 };
+        let request = Request::new(message);
+
+        let response = geometric_impl.area_circle(request).await.unwrap();
+        assert_eq!(response.into_inner().value, 12.566371);
     }
 }
