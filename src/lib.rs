@@ -5,36 +5,33 @@ use tonic::Request;
 
 mod proto;
 
-pub struct GeometricClientImpl {
-    pub addr: String,
-    pub port: u16,
+#[derive(Clone)]
+pub struct GeometricGrpcInterface {
+    client: GeometricClient<Channel>
 }
 
-impl GeometricClientImpl {
-    pub async fn area_square(&self, message: AreaSquareMessage) -> Option<ResultResponse> {
-        let channel = Channel::from_shared(format!("http://{}:{}", self.addr, self.port))
+impl GeometricGrpcInterface {
+    pub async fn new(addr: &'static str, port: u16) -> Self {
+        let channel = Channel::from_shared(format!("http://{addr}:{port}"))
             .unwrap()
             .connect()
             .await
             .unwrap();
-        let mut client = GeometricClient::new(channel);
+        Self {
+            client: GeometricClient::new(channel)
+        }
+    }
 
-        client
+    pub async fn area_square(&mut self, message: AreaSquareMessage) -> Option<ResultResponse> {
+        self.client
             .area_square(Request::new(message))
             .await
             .map(tonic::Response::into_inner)
             .ok()
     }
 
-    pub async fn area_circle(&self, message: AreaCircleMessage) -> Option<ResultResponse> {
-        let channel = Channel::from_shared(format!("http://{}:{}", self.addr, self.port))
-            .unwrap()
-            .connect()
-            .await
-            .unwrap();
-        let mut client = GeometricClient::new(channel);
-
-        client
+    pub async fn area_circle(&mut self, message: AreaCircleMessage) -> Option<ResultResponse> {
+        self.client
             .area_circle(Request::new(message))
             .await
             .map(tonic::Response::into_inner)
