@@ -7,7 +7,7 @@ mod proto;
 
 #[derive(Clone)]
 pub struct GeometricGrpcInterface {
-    client: GeometricClient<Channel>
+    client: GeometricClient<Channel>,
 }
 
 impl GeometricGrpcInterface {
@@ -18,7 +18,7 @@ impl GeometricGrpcInterface {
             .await
             .unwrap();
         Self {
-            client: GeometricClient::new(channel)
+            client: GeometricClient::new(channel),
         }
     }
 
