@@ -8,7 +8,7 @@ mod proto;
 
 #[tokio::main]
 async fn main() {
-    let addr = "localhost:50051"
+    let addr = "localhost:50052"
         .to_string()
         .to_socket_addrs()
         .unwrap()
